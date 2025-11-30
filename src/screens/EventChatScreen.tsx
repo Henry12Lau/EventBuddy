@@ -241,7 +241,8 @@ const styles = StyleSheet.create({
   myTimestamp: { color: '#DFE6E9' },
   inputContainer: { 
     flexDirection: 'row', 
-    padding: 12, 
+    padding: 12,
+    paddingBottom: 75,
     backgroundColor: '#fff', 
     alignItems: 'flex-end', 
     borderTopWidth: 1, 

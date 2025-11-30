@@ -8,9 +8,9 @@ export default function EventsScreen({ navigation }: any) {
   const { events, loading } = useEvents();
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Get current date and time for comparison
   const now = new Date();
 
+  // Filter events using original EventsScreen logic
   const filteredEvents = events
     .filter(event => {
       // Filter out cancelled events
@@ -39,26 +39,23 @@ export default function EventsScreen({ navigation }: any) {
       if (dateCompare !== 0) return dateCompare;
       return a.time.localeCompare(b.time);
     });
+  
   const renderEvent = ({ item }: { item: Event }) => {
     const isCancelled = item.isActive === false;
     const isFull = item.participants.length >= item.maxParticipants;
     
     return (
       <TouchableOpacity 
-        style={[
-          styles.eventItem, 
-          isCancelled && styles.eventItemCancelled,
-          isFull && !isCancelled && styles.eventItemFull
-        ]}
+        style={[styles.card, isCancelled && styles.cardCancelled]}
         onPress={() => navigation.navigate('EventDetail', { event: item })}
       >
-        <View style={styles.avatar}>
-          <Text style={styles.avatarIcon}>{getEventIcon(item.title)}</Text>
+        <View style={styles.iconBox}>
+          <Text style={styles.iconText}>{getEventIcon(item.title)}</Text>
         </View>
-        <View style={styles.eventContent}>
+        <View style={styles.eventInfo}>
           <Text style={styles.eventTitle}>{item.title}</Text>
-          <Text style={styles.eventTimeRange}>⏰ {item.time} - {item.endTime || 'TBD'}</Text>
-          <Text style={styles.eventSubtitle}>📍 {item.location}</Text>
+          <Text style={styles.eventDetail}>⏰ {item.time} - {item.endTime || 'TBD'}</Text>
+          <Text style={styles.eventLocation}>📍 {item.location}</Text>
           <Text style={styles.eventParticipants}>👥 {item.participants.length}/{item.maxParticipants} joined</Text>
         </View>
         <View style={styles.dateBox}>
@@ -116,7 +113,6 @@ export default function EventsScreen({ navigation }: any) {
         data={filteredEvents}
         renderItem={renderEvent}
         keyExtractor={item => item.id}
-        ItemSeparatorComponent={() => <View style={styles.separator} />}
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
             <Text style={styles.emptyText}>No upcoming events</Text>
@@ -166,7 +162,7 @@ const styles = StyleSheet.create({
     color: '#636E72',
     fontWeight: '600'
   },
-  eventItem: { 
+  card: { 
     flexDirection: 'row', 
     padding: 16, 
     backgroundColor: '#fff', 
@@ -183,26 +179,10 @@ const styles = StyleSheet.create({
     position: 'relative',
     overflow: 'hidden'
   },
-  eventItemCancelled: {
+  cardCancelled: {
     opacity: 0.7,
     borderLeftColor: '#FF6B6B'
   },
-  eventItemFull: {
-    borderLeftColor: '#FFA502'
-  },
-  avatar: { 
-    width: 56, 
-    height: 56, 
-    alignItems: 'center', 
-    justifyContent: 'center', 
-    marginRight: 14
-  },
-  avatarIcon: { fontSize: 48 },
-  eventContent: { flex: 1, justifyContent: 'center' },
-  eventTitle: { fontSize: 18, fontWeight: '700', color: '#2D3436', marginBottom: 6 },
-  eventTimeRange: { fontSize: 14, color: '#2D3436', marginBottom: 4, fontWeight: '600' },
-  eventSubtitle: { fontSize: 14, color: '#636E72', marginBottom: 4 },
-  eventParticipants: { fontSize: 13, color: '#2C3B4D', fontWeight: '600', marginTop: 2 },
   dateBox: { 
     width: 70, 
     height: 70,
@@ -221,11 +201,23 @@ const styles = StyleSheet.create({
   dateMonth: { fontSize: 11, color: '#fff', textTransform: 'uppercase', fontWeight: '700', textAlign: 'center' },
   dateDay: { fontSize: 24, fontWeight: 'bold', color: '#fff', textAlign: 'center', marginVertical: 2 },
   dateYear: { fontSize: 11, color: '#fff', fontWeight: '600', textAlign: 'center' },
-  separator: { height: 0 },
-  emptyContainer: { 
-    alignItems: 'center', 
-    justifyContent: 'center', 
-    marginTop: 80 
+  iconBox: {
+    width: 56,
+    height: 56,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 14
+  },
+  iconText: { fontSize: 48 },
+  eventInfo: { flex: 1, justifyContent: 'center' },
+  eventTitle: { fontSize: 18, fontWeight: '700', marginBottom: 6, color: '#2D3436' },
+  eventDetail: { fontSize: 14, color: '#2D3436', marginBottom: 4, fontWeight: '600' },
+  eventLocation: { fontSize: 14, color: '#636E72', marginBottom: 4 },
+  eventParticipants: { fontSize: 13, color: '#2C3B4D', fontWeight: '600', marginTop: 2 },
+  emptyContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 80
   },
   emptyText: { 
     fontSize: 18, 

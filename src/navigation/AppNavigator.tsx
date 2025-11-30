@@ -65,9 +65,21 @@ function EventsStack() {
           ),
         })}
       />
-      <Stack.Screen name="CreateEvent" component={CreateEventScreen} options={{ title: 'Create Event' }} />
-      <Stack.Screen name="EventDetail" component={EventDetailScreen} options={{ headerShown: false }} />
-      <Stack.Screen name="EventChat" component={EventChatScreen} options={{ headerShown: false }} />
+      <Stack.Screen 
+        name="CreateEvent" 
+        component={CreateEventScreen} 
+        options={{ title: 'Create Event' }} 
+      />
+      <Stack.Screen 
+        name="EventDetail" 
+        component={EventDetailScreen} 
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen 
+        name="EventChat" 
+        component={EventChatScreen} 
+        options={{ headerShown: false }}
+      />
     </Stack.Navigator>
   );
 }
@@ -79,32 +91,76 @@ function MainTabs() {
   
   return (
     <Tab.Navigator 
-      screenOptions={{ 
+      screenOptions={({ route }) => ({
         headerShown: true,
         headerStyle: {
           backgroundColor: '#2C3B4D',
-          elevation: 8,
-          shadowColor: '#2C3B4D',
-          shadowOffset: { width: 0, height: 4 },
-          shadowOpacity: 0.3,
-          shadowRadius: 8,
+          elevation: 0,
+          shadowOpacity: 0,
+          borderBottomWidth: 0,
         },
         headerTintColor: '#fff',
         headerTitleStyle: {
-          fontWeight: 'bold',
-          fontSize: 20,
+          fontWeight: '700',
+          fontSize: 22,
+          letterSpacing: 0.3,
         },
-        tabBarActiveTintColor: '#2C3B4D',
-        tabBarInactiveTintColor: '#636E72',
+        tabBarActiveTintColor: '#FFB162',
+        tabBarInactiveTintColor: '#95A5A6',
+        tabBarShowLabel: true,
+        tabBarLabelStyle: {
+          fontSize: 11,
+          fontWeight: '600',
+          marginTop: -2,
+          marginBottom: 2,
+        },
         tabBarStyle: {
-          backgroundColor: '#fff',
-          borderTopWidth: 1,
-          borderTopColor: '#DFE6E9',
-          paddingBottom: insets.bottom > 0 ? insets.bottom : 5,
-          paddingTop: 5,
-          height: 60 + (insets.bottom > 0 ? insets.bottom : 0)
-        }
-      }}
+          backgroundColor: '#FFFFFF',
+          borderTopWidth: 0,
+          elevation: 20,
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: -4 },
+          shadowOpacity: 0.1,
+          shadowRadius: 12,
+          paddingBottom: insets.bottom > 0 ? insets.bottom : 8,
+          paddingTop: 8,
+          height: 65 + (insets.bottom > 0 ? insets.bottom : 0),
+          position: 'absolute',
+          borderTopLeftRadius: 20,
+          borderTopRightRadius: 20,
+        },
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconText = '';
+          let iconSize = focused ? 26 : 24;
+          
+          if (route.name === 'Events') {
+            iconText = '🎯';
+          } else if (route.name === 'Schedule') {
+            iconText = '📅';
+          } else if (route.name === 'Profile') {
+            iconText = '👤';
+          }
+          
+          return (
+            <View style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: 50,
+              height: 50,
+              borderRadius: 25,
+              backgroundColor: focused ? 'rgba(255, 177, 98, 0.15)' : 'transparent',
+              marginTop: 4,
+            }}>
+              <Text style={{ 
+                fontSize: iconSize,
+                transform: [{ scale: focused ? 1.1 : 1 }],
+              }}>
+                {iconText}
+              </Text>
+            </View>
+          );
+        },
+      })}
     >
       <Tab.Screen 
         name="Events" 
@@ -112,7 +168,6 @@ function MainTabs() {
         options={{ 
           headerShown: false,
           tabBarLabel: 'Events',
-          tabBarIcon: ({ color, size }) => <Text style={{ fontSize: size }}>🎯</Text>
         }} 
       />
       <Tab.Screen 
@@ -121,31 +176,17 @@ function MainTabs() {
         options={{ 
           title: 'My Schedule',
           tabBarLabel: 'Schedule',
-          tabBarIcon: ({ color, size }) => <Text style={{ fontSize: size }}>📅</Text>
         }} 
       />
+
       <Tab.Screen 
         name="Profile" 
         component={ProfileScreen} 
         options={{ 
           title: 'My Profile',
           tabBarLabel: 'Profile',
-          tabBarIcon: ({ color, size }) => <Text style={{ fontSize: size }}>👤</Text>
         }} 
       />
-      {/* Admin tab - Commented out for production */}
-      {/* Only show Admin tab in development mode */}
-      {/* {isDevelopment && (
-        <Tab.Screen 
-          name="Admin" 
-          component={AdminScreen} 
-          options={{ 
-            title: 'Admin Tools',
-            tabBarLabel: 'Admin',
-            tabBarIcon: ({ color, size }) => <Text style={{ fontSize: size }}>⚙️</Text>
-          }} 
-        />
-      )} */}
     </Tab.Navigator>
   );
 }

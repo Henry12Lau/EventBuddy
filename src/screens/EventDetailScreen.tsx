@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert, Platform } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useEvents } from '../context/EventContext';
 import { useUser } from '../context/UserContext';
 import { getEventIcon } from '../utils/eventIcons';
@@ -9,6 +9,7 @@ export default function EventDetailScreen({ route, navigation }: any) {
   const { event } = route.params;
   const { joinEvent, exitEvent, cancelEvent } = useEvents();
   const { currentUser } = useUser();
+  const insets = useSafeAreaInsets();
   const [isJoining, setIsJoining] = useState(false);
   const [isExiting, setIsExiting] = useState(false);
   const [isCancelling, setIsCancelling] = useState(false);
@@ -157,7 +158,11 @@ export default function EventDetailScreen({ route, navigation }: any) {
         </View>
       </View>
 
-      <ScrollView style={styles.content}>
+      <ScrollView 
+        style={styles.content}
+        contentContainerStyle={[styles.scrollContent, { paddingBottom: 100 + 65 + insets.bottom }]}
+        showsVerticalScrollIndicator={true}
+      >
         {isCancelled && (
           <View style={styles.cancelledBanner}>
             <Text style={styles.cancelledIcon}>⚠️</Text>
@@ -223,7 +228,10 @@ export default function EventDetailScreen({ route, navigation }: any) {
         </View>
       </ScrollView>
 
-      <View style={styles.footer}>
+      <View style={[styles.footer, { 
+        paddingBottom: 20 + insets.bottom,
+        bottom: 65,
+      }]}>
         <TouchableOpacity 
           style={[styles.chatButton, (!hasJoined && !isCreator) && styles.chatButtonDisabled]}
           onPress={() => navigation.navigate('EventChat', { event })}
@@ -279,6 +287,7 @@ export default function EventDetailScreen({ route, navigation }: any) {
 const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: '#2C3B4D' },
   container: { flex: 1, backgroundColor: '#F2F1ED' },
+
   header: { 
     flexDirection: 'row', 
     paddingHorizontal: 16,
@@ -313,7 +322,12 @@ const styles = StyleSheet.create({
   avatarIcon: { fontSize: 36 },
   headerInfo: { flex: 1 },
   title: { fontSize: 20, fontWeight: 'bold', color: '#fff' },
-  content: { flex: 1 },
+  content: { 
+    flex: 1,
+  },
+  scrollContent: { 
+    paddingBottom: 180,
+  },
   cancelledBanner: {
     backgroundColor: '#FF6B6B',
     marginHorizontal: 20,
@@ -404,16 +418,12 @@ const styles = StyleSheet.create({
   value: { fontSize: 17, color: '#2D3436', fontWeight: '600' },
   divider: { height: 1, backgroundColor: '#E9EDEF', marginVertical: 6 },
   footer: { 
+    position: 'absolute',
+    left: 0,
+    right: 0,
     flexDirection: 'row', 
-    padding: 20, 
-    backgroundColor: '#fff', 
-    borderTopWidth: 1, 
-    borderTopColor: '#E9EDEF',
-    elevation: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: -2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8
+    padding: 20,
+    backgroundColor: 'transparent',
   },
   chatButton: { 
     flex: 1, 
