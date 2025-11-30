@@ -1,0 +1,56 @@
+{
+  "expo": {
+    "name": "EventBuddy",
+    "slug": "event-buddy",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "icon": "./assets/icon.png",
+    "splash": {
+      "resizeMode": "contain",
+      "backgroundColor": "#2C3B4D"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.eventbuddy.app"
+    },
+    "android": {
+      "package": "com.eventbuddy.app",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "softwareKeyboardLayoutMode": "pan"
+    },
+    "plugins": [
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/icon.png",
+          "color": "#FFB162",
+          "sounds": []
+        }
+      ]
+    ],
+    "notification": {
+      "icon": "./assets/icon.png",
+      "color": "#FFB162",
+      "androidMode": "default",
+      "androidCollapsedTitle": "EventBuddy"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "b58b1a24-657f-4dba-801e-f327fe8e5c92"
+      }
+    },
+    "owner": "h12dev"
+  }
+}
