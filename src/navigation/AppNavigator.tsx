@@ -22,6 +22,7 @@ function EventsStack() {
   return (
     <Stack.Navigator
       screenOptions={{
+        cardStyle: { flex: 1 },
         headerStyle: {
           backgroundColor: '#2C3B4D',
           elevation: 8,
@@ -169,6 +170,11 @@ function MainTabs() {
           headerShown: false,
           tabBarLabel: 'Events',
         }} 
+        listeners={({ navigation }) => ({
+          tabPress: (e) => {
+            navigation.navigate('Events', { screen: 'EventsList' });
+          },
+        })}
       />
       <Tab.Screen 
         name="Schedule" 
@@ -178,7 +184,6 @@ function MainTabs() {
           tabBarLabel: 'Schedule',
         }} 
       />
-
       <Tab.Screen 
         name="Profile" 
         component={ProfileScreen} 

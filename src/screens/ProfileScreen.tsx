@@ -154,7 +154,7 @@ export default function ProfileScreen() {
           </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity 
+        {/* <TouchableOpacity 
           style={styles.testButton} 
           onPress={async () => {
             await sendTestNotification();
@@ -186,7 +186,7 @@ export default function ProfileScreen() {
           <Text style={styles.debugButtonText}>
             🔍 Debug Push Token
           </Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
     </ScrollView>
   );

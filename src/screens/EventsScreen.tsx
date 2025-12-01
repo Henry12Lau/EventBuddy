@@ -113,6 +113,7 @@ export default function EventsScreen({ navigation }: any) {
         data={filteredEvents}
         renderItem={renderEvent}
         keyExtractor={item => item.id}
+        contentContainerStyle={{ flexGrow: 1 }}
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
             <Text style={styles.emptyText}>No upcoming events</Text>
