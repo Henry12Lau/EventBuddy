@@ -58,13 +58,13 @@ export const getExpoPushToken = async (): Promise<string | null> => {
 export const sendEventCancelledNotification = async (
   eventTitle: string,
   eventDate: string,
-  eventTime: string
+  eventStartTime: string
 ): Promise<void> => {
   try {
     console.log('=== Sending notification ===');
     console.log('Event:', eventTitle);
     console.log('Date:', eventDate);
-    console.log('Time:', eventTime);
+    console.log('Time:', eventStartTime);
     
     const hasPermission = await requestNotificationPermissions();
     console.log('Has permission:', hasPermission);
@@ -77,10 +77,10 @@ export const sendEventCancelledNotification = async (
     const notificationId = await Notifications.scheduleNotificationAsync({
       content: {
         title: '🚫 Event Cancelled',
-        body: `"${eventTitle}" on ${eventDate} at ${eventTime} has been cancelled by the organizer.`,
+        body: `"${eventTitle}" on ${eventDate} at ${eventStartTime} has been cancelled by the organizer.`,
         sound: true,
         priority: Notifications.AndroidNotificationPriority.HIGH,
-        data: { type: 'event_cancelled', eventTitle, eventDate, eventTime },
+        data: { type: 'event_cancelled', eventTitle, eventDate, eventStartTime },
       },
       trigger: null, // Send immediately
     });
@@ -153,7 +153,7 @@ export const notifyEventParticipants = async (
   participantIds: string[],
   eventTitle: string,
   eventDate: string,
-  eventTime: string,
+  eventStartTime: string,
   currentUserId: string,
   participantTokens?: { [userId: string]: string }
 ): Promise<void> => {
@@ -165,7 +165,7 @@ export const notifyEventParticipants = async (
     
     // Always send local notification on this device
     console.log('Sending local cancellation notification...');
-    await sendEventCancelledNotification(eventTitle, eventDate, eventTime);
+    await sendEventCancelledNotification(eventTitle, eventDate, eventStartTime);
     
     // Send push notifications to other participants if tokens are provided
     if (participantTokens) {
@@ -179,8 +179,8 @@ export const notifyEventParticipants = async (
         await sendPushNotifications(
           tokens,
           '🚫 Event Cancelled',
-          `"${eventTitle}" on ${eventDate} at ${eventTime} has been cancelled by the organizer.`,
-          { type: 'event_cancelled', eventTitle, eventDate, eventTime }
+          `"${eventTitle}" on ${eventDate} at ${eventStartTime} has been cancelled by the organizer.`,
+          { type: 'event_cancelled', eventTitle, eventDate, eventStartTime }
         );
         console.log(`✅ Push notifications sent to ${tokens.length} participant(s)`);
       } else {

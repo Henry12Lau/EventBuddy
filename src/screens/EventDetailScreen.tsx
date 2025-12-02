@@ -21,7 +21,7 @@ export default function EventDetailScreen({ route, navigation }: any) {
   
   // Check if event is expired
   const now = new Date();
-  const eventEndTime = event.endTime || event.time;
+  const eventEndTime = event.endTime || event.startTime;
   const [endHours, endMinutes] = eventEndTime.split(':').map(Number);
   const eventEndDateTime = new Date(event.date);
   eventEndDateTime.setHours(endHours, endMinutes, 0, 0);
@@ -189,7 +189,7 @@ export default function EventDetailScreen({ route, navigation }: any) {
             <Text style={styles.icon}>📅</Text>
             <View style={styles.infoText}>
               <Text style={styles.label}>Date & Time</Text>
-              <Text style={styles.value}>{event.date} at {event.time} - {event.endTime || 'TBD'}</Text>
+              <Text style={styles.value}>{event.date} at {event.startTime} - {event.endTime || 'TBD'}</Text>
             </View>
           </View>
 

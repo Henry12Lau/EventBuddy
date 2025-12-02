@@ -16,7 +16,7 @@ export default function ScheduleScreen({ navigation }: any) {
   const activeEvents = myEvents
     .filter(event => {
       // Check if event has ended based on end time
-      const eventEndTime = event.endTime || event.time;
+      const eventEndTime = event.endTime || event.startTime;
       const [endHours, endMinutes] = eventEndTime.split(':').map(Number);
       const eventEndDateTime = new Date(event.date);
       eventEndDateTime.setHours(endHours, endMinutes, 0, 0);
@@ -26,13 +26,13 @@ export default function ScheduleScreen({ navigation }: any) {
     .sort((a, b) => {
       const dateCompare = new Date(a.date).getTime() - new Date(b.date).getTime();
       if (dateCompare !== 0) return dateCompare;
-      return a.time.localeCompare(b.time);
+      return a.startTime.localeCompare(b.startTime);
     });
   
   const archivedEvents = myEvents
     .filter(event => {
       // Check if event has ended based on end time
-      const eventEndTime = event.endTime || event.time;
+      const eventEndTime = event.endTime || event.startTime;
       const [endHours, endMinutes] = eventEndTime.split(':').map(Number);
       const eventEndDateTime = new Date(event.date);
       eventEndDateTime.setHours(endHours, endMinutes, 0, 0);
@@ -42,7 +42,7 @@ export default function ScheduleScreen({ navigation }: any) {
     .sort((a, b) => {
       const dateCompare = new Date(b.date).getTime() - new Date(a.date).getTime();
       if (dateCompare !== 0) return dateCompare;
-      return b.time.localeCompare(a.time);
+      return b.startTime.localeCompare(a.startTime);
     });
 
   const displayEvents = activeTab === 'active' ? activeEvents : archivedEvents;
@@ -60,7 +60,7 @@ export default function ScheduleScreen({ navigation }: any) {
         </View>
         <View style={styles.eventInfo}>
           <Text style={styles.eventTitle}>{item.title}</Text>
-          <Text style={styles.eventDetail}>⏰ {item.time} - {item.endTime || 'TBD'}</Text>
+          <Text style={styles.eventDetail}>⏰ {item.startTime} - {item.endTime || 'TBD'}</Text>
           <Text style={styles.eventLocation}>📍 {item.location}</Text>
           <Text style={styles.eventParticipants}>👥 {item.participants.length}/{item.maxParticipants} joined</Text>
         </View>

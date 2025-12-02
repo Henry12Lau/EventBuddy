@@ -1,8 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { Event } from '../types';
 import { fetchEvents, createEvent, joinEventInFirestore, deleteEvent, exitEvent as exitEventInFirestore, subscribeToEvents } from '../services/eventService';
-import { notifyEventParticipants } from '../services/notificationService';
-import { getUserPushTokens } from '../services/userService';
 
 interface EventContextType {
   events: Event[];
@@ -176,27 +174,6 @@ export function EventProvider({ children }: { children: ReactNode }) {
       console.log('Cancelling event in Firestore...');
       await deleteEvent(eventId);
       console.log('Event cancelled in Firestore');
-      
-      // Get push tokens for all participants
-      console.log('Fetching push tokens for participants...');
-      const participantTokens = await getUserPushTokens(event.participants);
-      console.log('Push tokens retrieved:', Object.keys(participantTokens).length);
-      
-      // Send notifications to all participants
-      console.log('Sending notifications...');
-      if (event.participants.length > 0) {
-        await notifyEventParticipants(
-          event.participants,
-          event.title,
-          event.date,
-          event.time,
-          event.creatorId,
-          participantTokens
-        );
-        console.log('Notifications sent');
-      } else {
-        console.log('No participants to notify');
-      }
       
       // Real-time listener will update the state automatically
     } catch (error) {

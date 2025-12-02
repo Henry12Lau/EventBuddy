@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "EventBuddy",
+    "name": "Event Buddy",
     "slug": "event-buddy",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -30,22 +30,8 @@
             "usesCleartextTraffic": true
           }
         }
-      ],
-      [
-        "expo-notifications",
-        {
-          "icon": "./assets/icon.png",
-          "color": "#FFB162",
-          "sounds": []
-        }
       ]
     ],
-    "notification": {
-      "icon": "./assets/icon.png",
-      "color": "#FFB162",
-      "androidMode": "default",
-      "androidCollapsedTitle": "EventBuddy"
-    },
     "extra": {
       "eas": {
         "projectId": "b58b1a24-657f-4dba-801e-f327fe8e5c92"

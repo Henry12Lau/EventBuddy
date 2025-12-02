@@ -1,406 +1,268 @@
-# Database Migration Guide
+# Database Migration Tool Guide
 
-## 🔄 Updating Your Firestore Database
+## Overview
 
-Your existing events need the new `isActive` field. Here's how to update them.
+The Database Migration screen helps you manage your Firestore database during development. It's only accessible in **DEV mode** from the Profile screen.
 
----
+## Access the Tool
 
-## 🎯 Quick Start (Easiest Method)
+1. Go to **Profile** tab
+2. Look for the green **"🔧 Database Migration"** button (only visible in development mode)
+3. Tap to open the migration screen
 
-### Step 1: Restart Your App
-```bash
-npm start
+## Features
+
+### 1. 🔍 Check Database
+- Shows current document counts for all collections
+- Displays: events, users, messages
+- Use this to verify your database state
+
+**Example Output:**
+```
+🔍 Checking DEV database...
+📊 events: 9 documents
+📊 users: 1 documents
+📊 messages: 0 documents
+✅ Database check complete!
 ```
 
-### Step 2: Go to Admin Tab
-- Open your app
-- Click the **Admin** tab (⚙️) at the bottom
-
-### Step 3: Click "Migrate Events to isActive"
-- You'll see a new blue button at the top
-- Click **"Migrate Events to isActive"**
-- Wait for success message
-
-### Step 4: Done!
-```
-Migration completed!
-
-Updated: 9 events
-Skipped: 0 events
-Total: 9 events
-```
-
-All your existing events now have `isActive: true`! ✅
-
----
-
-## 📊 What the Migration Does
-
-### Before Migration:
-```javascript
-events/event1
-  ├── title: "Morning Basketball"
-  ├── date: "2025-12-01"
-  ├── participants: ["1", "2"]
-  └── creatorId: "1"
-  // ❌ No isActive field
-```
-
-### After Migration:
-```javascript
-events/event1
-  ├── title: "Morning Basketball"
-  ├── date: "2025-12-01"
-  ├── participants: ["1", "2"]
-  ├── creatorId: "1"
-  └── isActive: true  // ✅ Added!
-```
-
----
-
-## 🔐 Is It Safe?
-
-### ✅ Yes, completely safe!
-
-**Why:**
-- Only adds `isActive: true` to events
-- Doesn't delete or modify existing data
+### 2. 🔧 Initialize Collections
+- Verifies that all required collections exist
+- Creates collections if they don't exist (Firestore auto-creates on first write)
 - Safe to run multiple times
-- Skips events that already have the field
-- Non-destructive operation
 
-**What it does:**
-1. Reads all events from Firestore
-2. Checks if `isActive` field exists
-3. If missing, adds `isActive: true`
-4. If exists, skips that event
-5. Reports how many were updated
+**Use Case:**
+- First time setting up a new Firebase project
+- Verifying database structure
 
----
+### 3. 🌱 Seed Mock Data
+- Adds sample events and users to your database
+- Includes 9 events across different dates
+- Creates 1 demo user
 
-## 📱 Step-by-Step with Screenshots
+**Mock Data Includes:**
+- Basketball, Yoga, Tennis, Soccer, Running, Boxing events
+- Events on Nov 25, Dec 1, Dec 2, Dec 3
+- Demo user: "Demo User" (demo@eventbuddy.com)
 
-### 1. Open Admin Tab
+**Use Case:**
+- Testing the app with realistic data
+- Development and debugging
+- Demo presentations
+
+### 4. 🗑️ Clear All Data
+- **⚠️ DANGEROUS:** Deletes ALL data from ALL collections
+- Requires confirmation before proceeding
+- Cannot be undone
+
+**Use Case:**
+- Resetting database to clean state
+- Before reseeding with fresh data
+- Cleaning up test data
+
+## Typical Workflow
+
+### First Time Setup (New Firebase Project)
+
 ```
-Bottom Navigation:
-[🎯 Events] [📅 Schedule] [👤 Profile] [⚙️ Admin] ← Click here
-```
-
-### 2. See Migration Card
-```
-┌─────────────────────────────────────┐
-│ 🔄 Migrate Database                 │
-│                                     │
-│ Add isActive field to existing      │
-│ events:                             │
-│ • Updates all events in Firestore   │
-│ • Sets isActive: true for all       │
-│ • Safe to run multiple times        │
-│                                     │
-│ Run this ONCE after updating app!   │
-│                                     │
-│ [Migrate Events to isActive]        │
-└─────────────────────────────────────┘
-```
-
-### 3. Click Button
-- Button turns gray
-- Shows "Migrating..."
-- Takes 2-5 seconds
-
-### 4. Success Message
-```
-Migration completed!
-
-Updated: 9 events
-Skipped: 0 events
-Total: 9 events
-
-[OK]
+1. Check Database → See it's empty
+2. Initialize Collections → Verify structure
+3. Seed Mock Data → Add sample data
+4. Check Database → Verify data was added
 ```
 
----
+### Reset Database
 
-## 🧪 Verify Migration
-
-### Method 1: Check Firebase Console
-1. Go to Firebase Console
-2. Click Firestore Database
-3. Open any event document
-4. ✅ Should see `isActive: true` field
-
-### Method 2: Check in App
-1. Go to Events tab
-2. Create a new event
-3. Cancel it
-4. ✅ Should see "CANCELLED" overlay
-5. Works! Migration successful
-
----
-
-## 🔄 Running Multiple Times
-
-**It's safe to run the migration multiple times!**
-
-### First Run:
 ```
-Migration completed!
-
-Updated: 9 events    ← All events updated
-Skipped: 0 events
-Total: 9 events
+1. Clear All Data → Remove everything
+2. Seed Mock Data → Add fresh data
 ```
 
-### Second Run:
-```
-Migration completed!
+### Verify Current State
 
-Updated: 0 events    ← Nothing to update
-Skipped: 9 events    ← All already have field
-Total: 9 events
+```
+1. Check Database → See current counts
 ```
 
-The migration is **idempotent** - running it multiple times has the same effect as running it once.
+## Safety Features
 
----
+- ✅ Only available in **DEV mode** (`__DEV__`)
+- ✅ Shows current environment (DEV/PROD) at top
+- ✅ Confirmation dialogs for destructive operations
+- ✅ Real-time status log shows all operations
+- ✅ Cannot accidentally run in production
 
-## 🛠️ Alternative Methods
+## Status Log
 
-### Method 1: Using Admin Screen (Recommended)
-✅ Easiest
-✅ One-click solution
-✅ Visual feedback
-✅ No coding needed
+The screen shows a real-time log of all operations:
 
-### Method 2: Manual in Firebase Console
-1. Go to Firebase Console
-2. Open Firestore Database
-3. Click on each event document
-4. Click "Add field"
-5. Field: `isActive`, Type: boolean, Value: true
-6. Click "Update"
-7. Repeat for all events
+```
+🔍 Checking DEV database...
+📊 events: 9 documents
+📊 users: 1 documents
+📊 messages: 0 documents
+✅ Database check complete!
+```
 
-❌ Time-consuming
-❌ Error-prone
-❌ Not recommended for many events
+This helps you:
+- Track what's happening
+- Debug issues
+- Verify operations completed successfully
 
-### Method 3: Using Firebase CLI
+## Environment Indicator
+
+The screen always shows which environment you're working with:
+
+```
+┌─────────────────────────────┐
+│ Database Migration    [DEV] │
+└─────────────────────────────┘
+```
+
+- **DEV** = Development database (safe to modify)
+- **PROD** = Production database (should not appear in dev mode)
+
+## Common Use Cases
+
+### 1. Setting Up New Dev Environment
+
 ```bash
-# Install Firebase CLI
-npm install -g firebase-tools
-
-# Login
-firebase login
-
-# Run migration script (advanced)
-firebase firestore:update events --set isActive=true
+# After creating new Firebase DEV project
+1. Update .env with DEV credentials
+2. Restart app
+3. Go to Profile → Database Migration
+4. Run: Initialize Collections
+5. Run: Seed Mock Data
+6. Run: Check Database (verify 9 events, 1 user)
 ```
 
-❌ Requires CLI setup
-❌ More complex
-❌ Only for advanced users
+### 2. Testing Event Features
 
----
+```bash
+# Need fresh data for testing
+1. Clear All Data
+2. Seed Mock Data
+3. Test your feature
+```
 
-## 📊 Migration Script Details
+### 3. Debugging Data Issues
 
-### What the Script Does:
-```typescript
-// src/services/migrateEvents.ts
+```bash
+# Something wrong with data
+1. Check Database (see current state)
+2. Clear All Data (if needed)
+3. Seed Mock Data (get known good state)
+```
 
-export const migrateEventsToIsActive = async () => {
-  // 1. Get all events from Firestore
-  const eventsCollection = collection(db, 'events');
-  const querySnapshot = await getDocs(eventsCollection);
-  
-  // 2. Loop through each event
-  for (const eventDoc of querySnapshot.docs) {
-    const eventData = eventDoc.data();
-    
-    // 3. Check if isActive already exists
-    if (eventData.isActive !== undefined) {
-      // Skip - already migrated
-      continue;
+### 4. Before Demo/Presentation
+
+```bash
+# Want clean, consistent data
+1. Clear All Data
+2. Seed Mock Data
+3. Check Database (verify counts)
+```
+
+## Troubleshooting
+
+### Button Not Showing
+
+**Problem:** Can't see "Database Migration" button in Profile
+
+**Solution:**
+- Make sure you're running in development mode (`npm start`)
+- Check that `__DEV__` is true
+- Button only shows in dev mode for safety
+
+### Permission Errors
+
+**Problem:** "Permission denied" when running operations
+
+**Solution:**
+- Check Firestore Security Rules
+- In development, you can use test mode rules:
+```javascript
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if true; // DEV ONLY!
     }
-    
-    // 4. Add isActive: true
-    await updateDoc(doc(db, 'events', eventDoc.id), {
-      isActive: true
-    });
   }
-  
-  // 5. Return results
-  return { updated, skipped, total };
-};
+}
 ```
 
----
+### Wrong Environment
 
-## ❓ Troubleshooting
-
-### Issue 1: "Migration failed" error
-
-**Cause:** Firestore not accessible or network issue
+**Problem:** Shows "PROD" instead of "DEV"
 
 **Solution:**
-1. Check internet connection
-2. Verify Firestore is enabled
-3. Check security rules allow write
-4. Try again
+- Check your `.env` file has DEV credentials
+- Verify `EXPO_PUBLIC_ENV=development`
+- Restart Expo dev server
+- Check console logs for Firebase environment
 
----
+### Seed Data Not Appearing
 
-### Issue 2: Button doesn't appear
-
-**Cause:** App not restarted after code update
+**Problem:** Seeded data but events don't show
 
 **Solution:**
-1. Stop app (Ctrl+C)
-2. Run `npm start` again
-3. Refresh browser/reload app
-4. Check Admin tab again
+1. Run "Check Database" to verify data was added
+2. Check event dates (may be in past/future)
+3. Verify you're looking at correct environment
+4. Refresh the Events screen
 
----
+## Best Practices
 
-### Issue 3: "Updated: 0 events"
+### DO ✅
+- Use this tool frequently during development
+- Clear and reseed data when testing new features
+- Check database state before and after operations
+- Keep DEV and PROD databases separate
 
-**Cause:** Events already migrated
+### DON'T ❌
+- Never use in production builds
+- Don't seed production database with mock data
+- Don't share DEV database credentials
+- Don't rely on DEV data for important testing
 
-**Solution:**
-- This is normal!
-- All events already have `isActive` field
-- No action needed
+## Mock Data Details
 
----
+### Events (9 total)
+- **Nov 25:** Football Match (past event)
+- **Dec 1:** Morning Basketball, Yoga Class (FULL), Lunch Yoga, Evening Tennis
+- **Dec 2:** Morning Run, Evening Soccer Match
+- **Dec 3:** Tennis Practice, Boxing Training
 
-### Issue 4: Some events not updated
+### Users (1 total)
+- **ID:** 1
+- **Name:** Demo User
+- **Email:** demo@eventbuddy.com
 
-**Cause:** Partial migration or error
+### Messages
+- Empty by default (created when users chat)
 
-**Solution:**
-1. Run migration again
-2. Check Firebase Console
-3. Manually add field to missing events
-4. Contact support if persists
+## Related Documentation
 
----
+- `FIREBASE_ENVIRONMENT_SETUP.md` - Setting up DEV/PROD environments
+- `FIRESTORE_SECURITY_RULES.md` - Security rules configuration
+- `EVENT_SCHEMA_MIGRATION.md` - Event schema changes
 
-## 🎯 When to Run Migration
+## Technical Details
 
-### Run Migration If:
-- ✅ You have existing events in Firestore
-- ✅ You just updated your app code
-- ✅ Events don't have `isActive` field
-- ✅ Cancel feature not working
+### Collections Managed
+- `events` - Event data
+- `users` - User profiles
+- `messages` - Chat messages
 
-### Don't Need Migration If:
-- ❌ Fresh install (no existing events)
-- ❌ Already ran migration successfully
-- ❌ All events created after update
+### Operations
+- **Check:** `getDocs()` on each collection
+- **Initialize:** Verifies collections exist (auto-created on write)
+- **Seed:** `addDoc()` for events, `setDoc()` for users
+- **Clear:** `deleteDoc()` for each document in collections
 
----
-
-## 📝 Migration Checklist
-
-Before running migration:
-- [ ] App is updated to latest code
-- [ ] Firestore is enabled
-- [ ] Internet connection is stable
-- [ ] Security rules allow write access
-
-After running migration:
-- [ ] Success message received
-- [ ] Check Firebase Console
-- [ ] Verify `isActive` field exists
-- [ ] Test cancel feature
-- [ ] All events display correctly
-
----
-
-## 🔮 Future Migrations
-
-If you need to migrate other fields in the future, you can:
-
-1. **Create new migration function** in `src/services/migrateEvents.ts`
-2. **Add button** to Admin screen
-3. **Run migration** once
-4. **Verify** in Firebase Console
-
-Example:
-```typescript
-export const migrateAddNewField = async () => {
-  // Similar pattern to migrateEventsToIsActive
-  // Add your new field to all events
-};
-```
-
----
-
-## 💡 Best Practices
-
-### Do:
-- ✅ Run migration once after code update
-- ✅ Verify in Firebase Console
-- ✅ Test cancel feature after migration
-- ✅ Keep migration script for reference
-
-### Don't:
-- ❌ Run migration repeatedly (unless needed)
-- ❌ Modify migration script unless you know what you're doing
-- ❌ Delete migration script (keep for future reference)
-- ❌ Manually edit all events (use migration instead)
-
----
-
-## 📊 Expected Results
-
-### For 9 Sample Events:
-```
-Before Migration:
-├── 9 events without isActive field
-└── Cancel feature doesn't work
-
-After Migration:
-├── 9 events with isActive: true
-├── Cancel feature works
-└── Cancelled events show overlay
-```
-
-### For Your Events:
-```
-Before Migration:
-├── X events without isActive field
-└── Cancel feature doesn't work
-
-After Migration:
-├── X events with isActive: true
-├── Cancel feature works
-└── Cancelled events show overlay
-```
-
----
-
-## 🎉 Summary
-
-**To update your database:**
-
-1. **Open app** → Go to Admin tab
-2. **Click** "Migrate Events to isActive"
-3. **Wait** for success message
-4. **Done!** All events updated
-
-**What happens:**
-- All existing events get `isActive: true`
-- Cancel feature starts working
-- Cancelled events show overlay
-- No data lost or modified
-
-**Time required:** 30 seconds
-
-**Difficulty:** Easy (one-click)
-
-**Safety:** 100% safe
-
-Your database is now ready for the new cancel feature! 🚀
+### Error Handling
+- All operations wrapped in try-catch
+- Errors displayed in status log
+- User-friendly error messages
+- Console logs for debugging

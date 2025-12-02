@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView, Alert, Platform, KeyboardAvoidingView } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView, Alert, Platform, KeyboardAvoidingView, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { saveUserToStorage } from '../services/storageService';
 import { createUser } from '../services/userService';
@@ -87,8 +87,12 @@ export default function WelcomeScreen({ navigation }: any) {
           keyboardShouldPersistTaps="handled"
         >
         <View style={styles.header}>
-          <Text style={styles.emoji}>👋</Text>
-          <Text style={styles.title}>Welcome to Event Buddy!</Text>
+          <Image 
+            source={require('../../assets/icon.png')} 
+            style={styles.logo}
+            resizeMode="contain"
+          />
+          <Text style={styles.title}>Event Buddy</Text>
         </View>
 
         <View style={styles.form}>
@@ -165,8 +169,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 40,
   },
-  emoji: {
-    fontSize: 64,
+  logo: {
+    width: 100,
+    height: 100,
     marginBottom: 16,
   },
   title: {

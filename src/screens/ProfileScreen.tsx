@@ -4,10 +4,12 @@ import { User } from '../types';
 import { getUserById, saveUserProfile } from '../services/userService';
 import { saveUserToStorage } from '../services/storageService';
 import { useUser } from '../context/UserContext';
+import { useIsAdmin } from '../hooks/useIsAdmin';
 import { sendTestNotification, debugPushToken } from '../services/notificationService';
 
-export default function ProfileScreen() {
+export default function ProfileScreen({ navigation }: any) {
   const { currentUser, setCurrentUser } = useUser();
+  const isAdmin = useIsAdmin();
   const [user, setUser] = useState<User>({
     id: currentUser?.id || '1',
     name: currentUser?.name || '',
@@ -18,7 +20,7 @@ export default function ProfileScreen() {
 
   useEffect(() => {
     loadUserProfile();
-  }, [currentUser]);
+  }, [currentUser?.id]); // Only depend on user ID, not the whole object
 
   const loadUserProfile = async () => {
     try {
@@ -31,6 +33,13 @@ export default function ProfileScreen() {
         const firestoreUser = await getUserById(currentUser.id);
         if (firestoreUser) {
           setUser(firestoreUser);
+          // Update context with role from Firestore only if it changed
+          if (firestoreUser.role !== currentUser.role) {
+            setCurrentUser({
+              ...currentUser,
+              role: firestoreUser.role
+            });
+          }
         }
       }
     } catch (error) {
@@ -154,6 +163,28 @@ export default function ProfileScreen() {
           </Text>
         </TouchableOpacity>
 
+        {isAdmin && (
+          <>
+            <TouchableOpacity 
+              style={styles.adminButton} 
+              onPress={() => navigation.navigate('AdminPanel')}
+            >
+              <Text style={styles.adminButtonText}>
+                🔐 Admin Panel
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={styles.migrationButton} 
+              onPress={() => navigation.navigate('DatabaseMigration')}
+            >
+              <Text style={styles.migrationButtonText}>
+                🔧 Database Migration
+              </Text>
+            </TouchableOpacity>
+          </>
+        )}
+
         {/* <TouchableOpacity 
           style={styles.testButton} 
           onPress={async () => {
@@ -234,6 +265,38 @@ const styles = StyleSheet.create({
     opacity: 0.6,
   },
   buttonText: { color: '#fff', fontSize: 18, fontWeight: '700', letterSpacing: 0.5 },
+  migrationButton: { 
+    backgroundColor: '#00B894', 
+    padding: 18, 
+    borderRadius: 16, 
+    marginTop: 12, 
+    marginBottom: 24,
+    alignItems: 'center', 
+    elevation: 4, 
+    shadowColor: '#00B894', 
+    shadowOffset: { width: 0, height: 2 }, 
+    shadowOpacity: 0.3, 
+    shadowRadius: 4,
+    borderWidth: 2,
+    borderColor: '#00A383'
+  },
+  migrationButtonText: { color: '#fff', fontSize: 16, fontWeight: '700', letterSpacing: 0.5 },
+  adminButton: { 
+    backgroundColor: '#6C5CE7', 
+    padding: 18, 
+    borderRadius: 16, 
+    marginTop: 12, 
+    marginBottom: 12,
+    alignItems: 'center', 
+    elevation: 4, 
+    shadowColor: '#6C5CE7', 
+    shadowOffset: { width: 0, height: 2 }, 
+    shadowOpacity: 0.3, 
+    shadowRadius: 4,
+    borderWidth: 2,
+    borderColor: '#5F3DC4'
+  },
+  adminButtonText: { color: '#fff', fontSize: 16, fontWeight: '700', letterSpacing: 0.5 },
   testButton: { 
     backgroundColor: '#FFB162', 
     padding: 18, 

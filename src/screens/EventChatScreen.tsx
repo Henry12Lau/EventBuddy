@@ -130,56 +130,63 @@ export default function EventChatScreen({ route, navigation }: any) {
 
   return (
     <SafeAreaView style={styles.safeArea} edges={['top']}>
-      <KeyboardAvoidingView 
-        style={styles.container}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
-      >
-      <View style={styles.chatHeader}>
-        <TouchableOpacity 
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}
-        >
-          <Text style={styles.backIcon}>←</Text>
-        </TouchableOpacity>
-        <View style={styles.headerInfo}>
-          <Text style={styles.chatTitle}>{event.title}</Text>
-          <Text style={styles.chatSubtitle}>{event.participants.length} participants</Text>
-        </View>
-      </View>
-      <FlatList
-        ref={flatListRef}
-        data={messages}
-        renderItem={renderMessage}
-        keyExtractor={item => item.id}
-        style={styles.messageList}
-        contentContainerStyle={styles.messageListContent}
-        onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}
-        ListEmptyComponent={
-          <View style={styles.emptyContainer}>
-            <Text style={styles.emptyText}>No messages yet</Text>
-            <Text style={styles.emptySubtext}>Be the first to say something!</Text>
+      <View style={styles.container}>
+        <View style={styles.chatHeader}>
+          <TouchableOpacity 
+            style={styles.backButton}
+            onPress={() => navigation.goBack()}
+          >
+            <Text style={styles.backIcon}>←</Text>
+          </TouchableOpacity>
+          <View style={styles.headerInfo}>
+            <Text style={styles.chatTitle}>{event.title}</Text>
+            <Text style={styles.chatSubtitle}>{event.participants.length} participants</Text>
           </View>
-        }
-      />
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          value={inputText}
-          onChangeText={setInputText}
-          placeholder="Message"
-          placeholderTextColor="#667781"
-          multiline
-        />
-        <TouchableOpacity 
-          style={[styles.sendButton, sending && styles.sendButtonDisabled]} 
-          onPress={sendMessage}
-          disabled={sending}
+        </View>
+      
+        <KeyboardAvoidingView 
+          style={styles.chatContent}
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+          keyboardVerticalOffset={0}
         >
-          <Text style={styles.sendButtonText}>{sending ? '...' : '➤'}</Text>
-        </TouchableOpacity>
-      </View>
+        <FlatList
+          ref={flatListRef}
+          data={messages}
+          renderItem={renderMessage}
+          keyExtractor={item => item.id}
+          style={styles.messageList}
+          contentContainerStyle={styles.messageListContent}
+          onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}
+          keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="interactive"
+          ListEmptyComponent={
+            <View style={styles.emptyContainer}>
+              <Text style={styles.emptyText}>No messages yet</Text>
+              <Text style={styles.emptySubtext}>Be the first to say something!</Text>
+            </View>
+          }
+        />
+        
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.input}
+            value={inputText}
+            onChangeText={setInputText}
+            placeholder="Type a message"
+            placeholderTextColor="#8696A0"
+            multiline
+            maxLength={1000}
+          />
+          <TouchableOpacity 
+            style={[styles.sendButton, (!inputText.trim() || sending) && styles.sendButtonDisabled]} 
+            onPress={sendMessage}
+            disabled={!inputText.trim() || sending}
+          >
+            <Text style={styles.sendButtonText}>➤</Text>
+          </TouchableOpacity>
+        </View>
       </KeyboardAvoidingView>
+      </View>
     </SafeAreaView>
   );
 }
@@ -193,8 +200,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#2C3B4D', 
-    padding: 16, 
-    paddingTop: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 16,
     elevation: 8, 
     shadowColor: '#2C3B4D', 
     shadowOffset: { width: 0, height: 4 }, 
@@ -218,8 +225,9 @@ const styles = StyleSheet.create({
   },
   chatTitle: { fontSize: 20, fontWeight: '700', color: '#fff' },
   chatSubtitle: { fontSize: 13, color: '#DFE6E9', marginTop: 4, fontWeight: '500' },
+  chatContent: { flex: 1 },
   messageList: { flex: 1 },
-  messageListContent: { padding: 12 },
+  messageListContent: { padding: 12, paddingBottom: 8 },
   messageRow: { marginVertical: 3, flexDirection: 'row' },
   myMessageRow: { justifyContent: 'flex-end' },
   messageBubble: { 
@@ -242,7 +250,7 @@ const styles = StyleSheet.create({
   inputContainer: { 
     flexDirection: 'row', 
     padding: 12,
-    paddingBottom: 75,
+    paddingBottom: Platform.OS === 'ios' ? 95 : 95, // Extra space for tab bar
     backgroundColor: '#fff', 
     alignItems: 'flex-end', 
     borderTopWidth: 1, 
@@ -258,13 +266,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#F2F1ED', 
     borderRadius: 24, 
     paddingHorizontal: 18, 
-    paddingVertical: 12, 
+    paddingVertical: Platform.OS === 'ios' ? 12 : 10, 
     marginRight: 10, 
-    maxHeight: 100, 
-    fontSize: 15, 
+    maxHeight: 120, 
+    minHeight: 48,
+    fontSize: 16, 
     color: '#2D3436',
     borderWidth: 1,
-    borderColor: '#E9EDEF'
+    borderColor: '#E9EDEF',
+    textAlignVertical: 'center'
   },
   sendButton: { 
     width: 48, 

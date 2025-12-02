@@ -19,7 +19,7 @@ export default function EventsScreen({ navigation }: any) {
       }
       
       // Filter out expired events based on end time
-      const eventEndTime = event.endTime || event.time;
+      const eventEndTime = event.endTime || event.startTime;
       const [endHours, endMinutes] = eventEndTime.split(':').map(Number);
       const eventEndDateTime = new Date(event.date);
       eventEndDateTime.setHours(endHours, endMinutes, 0, 0);
@@ -37,7 +37,7 @@ export default function EventsScreen({ navigation }: any) {
     .sort((a, b) => {
       const dateCompare = new Date(a.date).getTime() - new Date(b.date).getTime();
       if (dateCompare !== 0) return dateCompare;
-      return a.time.localeCompare(b.time);
+      return a.startTime.localeCompare(b.startTime);
     });
   
   const renderEvent = ({ item }: { item: Event }) => {
@@ -54,7 +54,7 @@ export default function EventsScreen({ navigation }: any) {
         </View>
         <View style={styles.eventInfo}>
           <Text style={styles.eventTitle}>{item.title}</Text>
-          <Text style={styles.eventDetail}>⏰ {item.time} - {item.endTime || 'TBD'}</Text>
+          <Text style={styles.eventDetail}>⏰ {item.startTime} - {item.endTime || 'TBD'}</Text>
           <Text style={styles.eventLocation}>📍 {item.location}</Text>
           <Text style={styles.eventParticipants}>👥 {item.participants.length}/{item.maxParticipants} joined</Text>
         </View>
@@ -113,7 +113,7 @@ export default function EventsScreen({ navigation }: any) {
         data={filteredEvents}
         renderItem={renderEvent}
         keyExtractor={item => item.id}
-        contentContainerStyle={{ flexGrow: 1 }}
+        contentContainerStyle={{ flexGrow: 1, paddingBottom: 100 }}
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
             <Text style={styles.emptyText}>No upcoming events</Text>

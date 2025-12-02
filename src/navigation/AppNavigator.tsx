@@ -13,6 +13,7 @@ import EventDetailScreen from '../screens/EventDetailScreen';
 import EventChatScreen from '../screens/EventChatScreen';
 import AdminScreen from '../screens/AdminScreen';
 import WelcomeScreen from '../screens/WelcomeScreen';
+import DatabaseMigrationScreen from '../screens/DatabaseMigrationScreen';
 import { hasCompletedOnboarding } from '../services/storageService';
 
 const Tab = createBottomTabNavigator();
@@ -80,6 +81,45 @@ function EventsStack() {
         name="EventChat" 
         component={EventChatScreen} 
         options={{ headerShown: false }}
+      />
+    </Stack.Navigator>
+  );
+}
+
+function ProfileStack() {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        cardStyle: { flex: 1 },
+        headerStyle: {
+          backgroundColor: '#2C3B4D',
+          elevation: 8,
+          shadowColor: '#2C3B4D',
+          shadowOffset: { width: 0, height: 4 },
+          shadowOpacity: 0.3,
+          shadowRadius: 8,
+        },
+        headerTintColor: '#fff',
+        headerTitleStyle: {
+          fontWeight: 'bold',
+          fontSize: 20,
+        },
+      }}
+    >
+      <Stack.Screen 
+        name="ProfileMain" 
+        component={ProfileScreen} 
+        options={{ title: 'My Profile' }}
+      />
+      <Stack.Screen 
+        name="DatabaseMigration" 
+        component={DatabaseMigrationScreen} 
+        options={{ title: 'Database Migration' }}
+      />
+      <Stack.Screen 
+        name="AdminPanel" 
+        component={AdminScreen} 
+        options={{ title: 'Admin Panel' }}
       />
     </Stack.Navigator>
   );
@@ -186,9 +226,9 @@ function MainTabs() {
       />
       <Tab.Screen 
         name="Profile" 
-        component={ProfileScreen} 
+        component={ProfileStack} 
         options={{ 
-          title: 'My Profile',
+          headerShown: false,
           tabBarLabel: 'Profile',
         }} 
       />

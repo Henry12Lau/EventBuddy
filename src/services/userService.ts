@@ -37,15 +37,21 @@ export const saveUserProfile = async (userId: string, userData: Omit<User, 'id'>
     const userDoc = await getDoc(userRef);
     
     if (userDoc.exists()) {
-      // Update existing user
-      await updateDoc(userRef, {
+      // Update existing user (don't overwrite role if not provided)
+      const updateData: any = {
         ...userData,
         updatedAt: Timestamp.now()
-      });
+      };
+      // Remove role from update if it's undefined (preserve existing role)
+      if (updateData.role === undefined) {
+        delete updateData.role;
+      }
+      await updateDoc(userRef, updateData);
     } else {
-      // Create new user
+      // Create new user with default role = 1 (normal user)
       await setDoc(userRef, {
         ...userData,
+        role: userData.role !== undefined ? userData.role : 1, // Default to normal user
         createdAt: Timestamp.now(),
         updatedAt: Timestamp.now()
       });
@@ -57,11 +63,12 @@ export const saveUserProfile = async (userId: string, userData: Omit<User, 'id'>
 };
 
 // Create a new user (for initial setup)
-export const createUser = async (userId: string, name: string, email: string): Promise<void> => {
+export const createUser = async (userId: string, name: string, email: string, role: number = 1): Promise<void> => {
   try {
     await setDoc(doc(db, USERS_COLLECTION, userId), {
       name,
       email,
+      role, // Default to 1 (normal user) unless specified
       createdAt: Timestamp.now(),
       updatedAt: Timestamp.now()
     });

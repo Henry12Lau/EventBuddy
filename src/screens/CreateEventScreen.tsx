@@ -87,7 +87,7 @@ export default function CreateEventScreen({ navigation }: any) {
       await addEvent({
         title: title.trim(),
         date: dateString,
-        time: startTime,
+        startTime: startTime,
         endTime: endTime,
         location: location.trim(),
         maxParticipants: parseInt(maxParticipants),
@@ -112,7 +112,10 @@ export default function CreateEventScreen({ navigation }: any) {
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView 
+      style={styles.container}
+      contentContainerStyle={{ flexGrow: 1, paddingBottom: 100, padding: 24, paddingTop: 20 }}
+    >
       {/* <Text style={styles.title}>Create Event</Text> */}
 
       <Text style={styles.label}>Event Title <Text style={styles.required}>*</Text></Text>
@@ -300,7 +303,7 @@ export default function CreateEventScreen({ navigation }: any) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 24, paddingTop: 20, backgroundColor: '#F2F1ED' },
+  container: { flex: 1, backgroundColor: '#F2F1ED' },
   title: { fontSize: 32, fontWeight: 'bold', marginBottom: 28, color: '#2D3436', letterSpacing: 0.5 },
   label: { fontSize: 15, fontWeight: '700', marginTop: 18, marginBottom: 10, color: '#2D3436', textTransform: 'uppercase', letterSpacing: 0.5 },
   required: { color: '#FF6B6B', fontSize: 15 },

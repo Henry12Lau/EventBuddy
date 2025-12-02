@@ -3,14 +3,15 @@ export interface User {
   name: string;
   email: string;
   pushToken?: string;
+  role?: number;  // 0 = admin, 1 = normal user (default)
 }
 
 export interface Event {
   id: string;
   title: string;
-  sport?: string;
+  icon?: string;
   date: string;
-  time: string;
+  startTime: string;
   endTime?: string;
   location: string;
   maxParticipants: number;

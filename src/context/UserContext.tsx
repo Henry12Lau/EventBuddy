@@ -1,7 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { getUserFromStorage, StoredUser } from '../services/storageService';
-import { getExpoPushToken } from '../services/notificationService';
-import { updateUserPushToken } from '../services/userService';
 
 interface UserContextType {
   currentUser: StoredUser | null;
@@ -19,13 +17,6 @@ export function UserProvider({ children }: { children: ReactNode }) {
     loadUser();
   }, []);
 
-  useEffect(() => {
-    // Register push token when user is loaded
-    if (currentUser) {
-      registerPushToken();
-    }
-  }, [currentUser]);
-
   const loadUser = async () => {
     try {
       const user = await getUserFromStorage();
@@ -34,23 +25,6 @@ export function UserProvider({ children }: { children: ReactNode }) {
       console.error('Failed to load user:', error);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const registerPushToken = async () => {
-    try {
-      if (!currentUser) return;
-      
-      console.log('Registering push token for user:', currentUser.id);
-      const token = await getExpoPushToken();
-      
-      if (token) {
-        console.log('Got push token, saving to Firestore...');
-        await updateUserPushToken(currentUser.id, token);
-        console.log('Push token registered successfully');
-      }
-    } catch (error) {
-      console.error('Failed to register push token:', error);
     }
   };
 
